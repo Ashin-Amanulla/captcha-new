@@ -164,7 +164,7 @@ def search_dubai_chamber(driver, trade_name):
 
 # Function to save results to an Excel file
 def save_results_to_excel(df, file_path):
-    df.to_excel(file_path, index=False)
+    df.to_excel(file_path, index=False, engine='openpyxl')
 
 
 
@@ -172,9 +172,9 @@ def save_results_to_excel(df, file_path):
 
 
 def main():
-    driver_path = r"E:\Captcha Bypass\chrome_driver\chromedriver.exe"
-    excel_path = r"E:\Captcha Bypass\excel\sample.xlsx"
-    output_path = r"E:\Captcha Bypass\excel\final_updated_sample.xlsx"
+    driver_path = r"E:\captch new\chrome_driver\chromedriver.exe"
+    excel_path = r"E:\captch new\excel\sample.xlsx"
+    output_path = r"E:\captch new\excel\final_updated_sample.xlsx"
 
     driver = setup_driver(driver_path)
     data = read_data_from_excel(excel_path)
@@ -202,13 +202,15 @@ def main():
             # Process Dubai Chamber search for the current row
             dubai_chamber_results = search_dubai_chamber(driver, row['trade_name_en'])
             # Combine results into a single row DataFrame
-            combined_results = {**mohre_results, **dubai_chamber_results}
+            combined_results = {**mohre_results,**dubai_chamber_results}
+            print (combined_results)
             combined_results_df = pd.DataFrame([combined_results])
             # Append the combined results to the all_results_df DataFrame
             all_results_df = pd.concat([all_results_df, combined_results_df], ignore_index=True)
         
         # Save the combined results to an Excel file
         save_results_to_excel(all_results_df, output_path)
+        final_df = pd.concat([data.reset_index(drop=True), all_results_df], axis=1)
     finally:
         driver.quit()
 
